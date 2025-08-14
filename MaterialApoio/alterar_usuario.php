@@ -74,7 +74,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <option value="3" <?=$usuario['id_perfil'] == 1 ? 'select':''?>>Almoxarife</option>
                 <option value="4" <?=$usuario['id_perfil'] == 1 ? 'select':''?>>Cliente</option>
             </select>
-
         </form>
 </body>
 </html>
