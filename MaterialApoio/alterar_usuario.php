@@ -43,7 +43,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alterar Usuario</title>
     <link rel = "stylesheet" href = "styles.css">
-<!-- CERTIFIQUE-SE DE QUE O JAVASCRIPT ESTÁ SENDO CARREGADO CORRETAMENTE-->
+    <!-- CERTIFIQUE-SE DE QUE O JAVASCRIPT ESTÁ SENDO CARREGADO CORRETAMENTE-->
     <script src="scripts.js"></script>
 </head>
 <body>
@@ -52,8 +52,29 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <form action="alterar_usuario.php" method="POST">
         <label for="busca_usuario">Digite o id ou nome do usuario</label>
         <input type="text" id="busca_usuario" name="busca_usuario" required onkeyup="buscarSugestoes()">
-        <button type="submit">Pesquisar</button>
+        <!-- div para exibir sugestoes de usuarios -->
+        <div id="sugestoes"></div>
+        <button type="submit">Buscar</button>
     </form>
-    
+
+    <?php if($usuario): ?>
+        <!-- FORMULARIO PARA ALTERAR USUARIO-->
+        <form action="processa_alteracao_usuario.php" method="POST">
+            <input type="hidden" name="id_usuario" value="<?=htmlspecialchars($usuario['id_usuario'])?>">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="<?=htmlspecialchars($usuario['nome'])?>" required>
+
+            <label for="nome">E-mail:</label>
+            <input type="email" id="email" name="email" value="<?=htmlspecialchars($usuario['email'])?>" required>
+
+            <label for="id_perfil">Perfil:</label>
+            <select name="id_perfil" id="id_perfil">
+                <option value="1" <?=$usuario['id_perfil'] == 1 ? 'select':''?>>Administrador</option>
+                <option value="2" <?=$usuario['id_perfil'] == 1 ? 'select':''?>>Secretaria</option>
+                <option value="3" <?=$usuario['id_perfil'] == 1 ? 'select':''?>>Almoxarife</option>
+                <option value="4" <?=$usuario['id_perfil'] == 1 ? 'select':''?>>Cliente</option>
+            </select>
+
+        </form>
 </body>
 </html>
