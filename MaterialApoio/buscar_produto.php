@@ -17,16 +17,16 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
 
     //VERIFICA SE A BUSCA É UM numero OU UM nome
     if(is_numeric($busca)){
-        $sql="SELECT * FROM usuario WHERE id_usuario = :busca ORDER BY nome ASC";
+        $sql="SELECT * FROM produto WHERE id_produto = :busca ORDER BY nome_prod ASC";
         $stmt=$pdo->prepare($sql);
         $stmt->bindParam(':busca',$busca, PDO::PARAM_INT);
     }else{
-        $sql="SELECT * FROM usuario WHERE nome LIKE :busca_nome ORDER BY nome ASC";
+        $sql="SELECT * FROM produto WHERE nome_prod LIKE :busca_nome ORDER BY nome_prod ASC";
         $stmt=$pdo->prepare($sql);
         $stmt->bindValue(':busca_nome',"$busca%", PDO::PARAM_STR);
     }
     }else{
-        $sql="SELECT * FROM usuario ORDER BY nome ASC";
+        $sql="SELECT * FROM produto ORDER BY nome_prod ASC";
         $stmt=$pdo->prepare($sql);
 
     }
@@ -100,7 +100,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
         </ul>
     </nav>
     <h2> Lista de Usuarios</h2>
-<form action="buscar_usuario.php" method="POST">
+<form action="buscar_produto.php" method="POST">
     <label for="busca">Digite o id ou nome(opcional): </label>
     <input type="text" id="busca" name="busca">
     <button type="submit">Pesquisar</button>
@@ -110,20 +110,22 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
         <table class="table table-success table-striped-columns">
             <tr>
                 <th>ID</th>
-                <th>Nome</th>
-                <th>Email</th>
-                <th>Perfil</th>
+                <th>Nome produto</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Valor unitario</th>
                 <th>Ações</th>
             </tr>
             <?php foreach($usuarios as $usuario):?>
-                <td><?=htmlspecialchars($usuario['id_usuario'])?></td>
-                <td><?=htmlspecialchars($usuario['nome'])?></td>
-                <td><?=htmlspecialchars($usuario['email'])?></td>
-                <td><?=htmlspecialchars($usuario['id_perfil'])?></td>
+                <td><?=htmlspecialchars($usuario['id_produto'])?></td>
+                <td><?=htmlspecialchars($usuario['nome_prod'])?></td>
+                <td><?=htmlspecialchars($usuario['descricao'])?></td>
+                <td><?=htmlspecialchars($usuario['qtde'])?></td>
+                <td><?=htmlspecialchars($usuario['valor_unit'])?></td>
                 <td>
-                    <a href="alterar_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>">Alterar</a>
+                    <a href="alterar_produto.php?id=<?=htmlspecialchars($usuario['id_produto'])?>">Alterar</a>
 
-                    <a href="excluir_usuario.php?id=<?=htmlspecialchars($usuario['id_usuario'])?>"  onclick="return confirm('Tem certeza que deseja excluir este usuario?')">Excluir</a>
+                    <a href="excluir_produto.php?id=<?=htmlspecialchars($usuario['id_produto'])?>"  onclick="return confirm('Tem certeza que deseja excluir este usuario?')">Excluir</a>
                 </td>
             </tr>
             <?php endforeach;?>

@@ -2,6 +2,12 @@
 session_start();
 require_once 'conexao.php';
 
+
+$sqlFornecedores = "SELECT id_fornecedor, nome_fornecedor FROM fornecedor";
+$stmtFornecedores = $pdo->prepare($sqlFornecedores);
+$stmtFornecedores->execute();
+$fornecedores = $stmtFornecedores->fetchAll(PDO::FETCH_ASSOC);
+
 //VERIFICA SE O USUARIO TEM PERMISSAO
 //SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR   
 
@@ -9,25 +15,37 @@ if($_SESSION['perfil']!=1){
     echo "Acesso Negado!";
 }
 
-if($_SERVER["REQUEST_METHOD"]=="POST"){
-    $nome = $_POST['nome'];
-    $email = $_POST['email'];
-    $senha = password_hash($_POST['senha'],PASSWORD_DEFAULT);
-    $id_perfil = $_POST['id_perfil'];
 
-    $sql="INSERT INTO usuario(nome,email,senha,id_perfil) VALUES (:nome,:email,:senha,:id_perfil)";
+if($_SERVER["REQUEST_METHOD"]=="POST"){
+    $nome_prod = $_POST['nome_prod'];
+    $descricao = $_POST['descricao'];
+    $quantidade = $_POST['quantidade'];
+    $valor = $_POST['valor'];
+    $fornecedor_id = $_POST['fornecedor']; // <-- aqui dentro
+
+    $sql="INSERT INTO produto(nome_prod,descricao,qtde,valor_unit) VALUES (:nome_prod,:descricao,:quantidade,:valor)";
     $stmt = $pdo->prepare($sql);
-    $stmt->bindParam(':nome',$nome);
-    $stmt->bindParam(':email',$email);
-    $stmt->bindParam(':senha',$senha);
-    $stmt->bindParam(':id_perfil',$id_perfil);
+    $stmt->bindParam(':nome_prod',$nome_prod);
+    $stmt->bindParam(':descricao',$descricao);
+    $stmt->bindParam(':quantidade',$quantidade);
+    $stmt->bindParam(':valor',$valor);
 
     if($stmt->execute()){
-        echo "<script>alert('Usuario cadastrado com sucesso!');</script>";
+        echo "<script>alert('Produto cadastrado com sucesso!');</script>";
+        $produto_id = $pdo->lastInsertId();
+
+        $sqlFornecedorProduto = "INSERT INTO fornecedor_produto(id_produto, id_fornecedor) 
+                                 VALUES (:id_produto, :id_fornecedor)";
+        $stmtFP = $pdo->prepare($sqlFornecedorProduto);
+        $stmtFP->bindParam(':id_produto', $produto_id);
+        $stmtFP->bindParam(':id_fornecedor', $fornecedor_id);
+        $stmtFP->execute();
     }else{
-        echo "<script>alert('Erro ao cadastrar o usuario!');</script>";
+        echo "<script>alert('Erro ao cadastrar produto!');</script>";
     }
 }
+
+
 
 $id_perfil = $_SESSION['perfil'];
 $sqlPerfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
@@ -98,25 +116,35 @@ $opcoes_menu = $permissoes[$id_perfil];
             <?php endforeach;?>
         </ul>
     </nav>
-    <h2>Cadastrar Usuario</h2>
-    <form action="cadastro_usuario.php" method="POST">
+    <h2>Cadastrar Produto</h2>
+    <form action="cadastro_produto.php" method="POST">
 
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
+        <label for="nome_prod">Nome do produto:</label>
+        <input type="text" id="nome_prod" name="nome_prod" required 
+       oninput="this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g,'')">
+
         
-        <label for="email">email:</label>
-        <input type="email" id="email" name="email" required>
+        <label for="descricao">Descrição:</label>
+        <input type="text" id="descricao" name="descricao" required>
 
-        <label for="senha">senha:</label>
-        <input type="password" id="senha" name="senha" required>
+        <label for="quantidade">Quantidade:</label>
+        <input type="text" id="quantidade" name="quantidade" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
 
-        <label for="id_perfil">Perfil:</label>
-        <select id="id_perfil" name="id_perfil">
-            <option value="1">Administrador</option>
-            <option value="2">Secretaria</option>
-            <option value="3">Almoxarife</option>
-            <option value="4">Cliente</option>
-        </select>
+        <label for="valor">Valor unitario:</label>
+        <input type="text" id="valor" name="valor" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" / required>
+
+        <label for="fornecedor">Fornecedor:</label>
+<select id="fornecedor" name="fornecedor" required>
+    <option value="">Selecione um fornecedor</option>
+    <?php foreach($fornecedores as $fornecedor): ?>
+        <option value="<?= $fornecedor['id_fornecedor'] ?>">
+            <?= htmlspecialchars($fornecedor['nome_fornecedor']) ?>
+        </option>
+    <?php endforeach; ?>
+</select>
+
+        
+
         <button type="submit">Salvar</button>
         <button type="reset">Cancelar</button>
     </form>
