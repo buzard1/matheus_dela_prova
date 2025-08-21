@@ -2,16 +2,16 @@
 session_start();
 require_once 'conexao.php';
 
-//VERIFICA SE O USUARIO TEM PERMISAO DE adm OU secretaria
-if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=2){
+//VERIFICA SE O USUARIO TEM PERMISAO DE adm OU secretaria ou almoxarife
+if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=2 && $_SESSION['perfil']!=3){
     echo "<script>alert('Acesso negado!');window.location.href='principal.php';</script>";
     exit();
     
 }
 
-$usuario = []; //INICIALIZA A VARIAVEL PARA EVITAR ERROS
+$produto = []; //INICIALIZA A VARIAVEL PARA EVITAR ERROS
 
-//SE O FORMULARIO FOR ENVIADO, BUSCA O USUARIO PELO ID OU NOME
+//SE O FORMULARIO FOR ENVIADO, BUSCA O PRODUTO PELO ID OU NOME
 if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
     $busca = trim($_POST['busca']);
 
@@ -30,8 +30,9 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
         $stmt=$pdo->prepare($sql);
 
     }
+
     $stmt->execute();
-    $usuarios = $stmt->fetchALL(PDO::FETCH_ASSOC);
+    $produtos = $stmt->fetchALL(PDO::FETCH_ASSOC);
 
     $id_perfil = $_SESSION['perfil'];
     $sqlPerfil = "SELECT nome_perfil FROM perfil WHERE id_perfil = :id_perfil";
@@ -77,7 +78,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Buscar Usuario</title>
+    <title>Buscar Produto</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <link rel = "stylesheet" href = "styles.css">
@@ -99,13 +100,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
             <?php endforeach;?>
         </ul>
     </nav>
-    <h2> Lista de Usuarios</h2>
+    <h2> Lista de Produtos</h2>
 <form action="buscar_produto.php" method="POST">
-    <label for="busca">Digite o id ou nome(opcional): </label>
+    <label for="busca">Digite o id ou nome do produto(opcional): </label>
     <input type="text" id="busca" name="busca">
     <button type="submit">Pesquisar</button>
 </form>
-    <?php if(!empty($usuarios)):?>
+    <?php if(!empty($produtos)):?>
 
         <table class="table table-success table-striped-columns">
             <tr>
@@ -116,22 +117,22 @@ if($_SERVER["REQUEST_METHOD"]=="POST" && !empty($_POST['busca'])){
                 <th>Valor unitario</th>
                 <th>Ações</th>
             </tr>
-            <?php foreach($usuarios as $usuario):?>
-                <td><?=htmlspecialchars($usuario['id_produto'])?></td>
-                <td><?=htmlspecialchars($usuario['nome_prod'])?></td>
-                <td><?=htmlspecialchars($usuario['descricao'])?></td>
-                <td><?=htmlspecialchars($usuario['qtde'])?></td>
-                <td><?=htmlspecialchars($usuario['valor_unit'])?></td>
+            <?php foreach($produtos as $produto):?>
+                <td><?=htmlspecialchars($produto['id_produto'])?></td>
+                <td><?=htmlspecialchars($produto['nome_prod'])?></td>
+                <td><?=htmlspecialchars($produto['descricao'])?></td>
+                <td><?=htmlspecialchars($produto['qtde'])?></td>
+                <td><?=htmlspecialchars($produto['valor_unit'])?></td>
                 <td>
-                    <a href="alterar_produto.php?id=<?=htmlspecialchars($usuario['id_produto'])?>">Alterar</a>
+                    <a href="alterar_produto.php?id=<?=htmlspecialchars($produto['id_produto'])?>">Alterar</a>
 
-                    <a href="excluir_produto.php?id=<?=htmlspecialchars($usuario['id_produto'])?>"  onclick="return confirm('Tem certeza que deseja excluir este usuario?')">Excluir</a>
+                    <a href="excluir_produto.php?id=<?=htmlspecialchars($produto['id_produto'])?>"  onclick="return confirm('Tem certeza que deseja excluir este produto?')">Excluir</a>
                 </td>
             </tr>
             <?php endforeach;?>
         </table>
         <?php else:?>
-            <p>Nenhum usuario encontrado.</p>
+            <p>Nenhum produto encontrado.</p>
             <?php endif;?>
             <a href="principal.php">Voltar</a>
 <center> <address> Matheus dela libera dos anjos/ Estudante / Tecnico em Deenvolvimento de Sistemas </address> </center>
