@@ -9,10 +9,11 @@ $stmtFornecedores->execute();
 $fornecedores = $stmtFornecedores->fetchAll(PDO::FETCH_ASSOC);
 
 //VERIFICA SE O USUARIO TEM PERMISSAO
-//SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR   
+ 
 
-if($_SESSION['perfil']!=1){
-    echo "Acesso Negado!";
+if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=3){
+    echo "<script>alert('Acesso Negado');window.location.href='principal.php'</script>";
+    exit();
 }
 
 
@@ -21,7 +22,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     $descricao = $_POST['descricao'];
     $quantidade = $_POST['quantidade'];
     $valor = $_POST['valor'];
-    $fornecedor_id = $_POST['fornecedor']; // <-- aqui dentro
+    $fornecedor_id = $_POST['fornecedor'];
 
     $sql="INSERT INTO produto(nome_prod,descricao,qtde,valor_unit) VALUES (:nome_prod,:descricao,:quantidade,:valor)";
     $stmt = $pdo->prepare($sql);
@@ -34,8 +35,7 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
         echo "<script>alert('Produto cadastrado com sucesso!');</script>";
         $produto_id = $pdo->lastInsertId();
 
-        $sqlFornecedorProduto = "INSERT INTO fornecedor_produto(id_produto, id_fornecedor) 
-                                 VALUES (:id_produto, :id_fornecedor)";
+        $sqlFornecedorProduto = "INSERT INTO fornecedor_produto(id_produto, id_fornecedor) VALUES (:id_produto, :id_fornecedor)";
         $stmtFP = $pdo->prepare($sqlFornecedorProduto);
         $stmtFP->bindParam(':id_produto', $produto_id);
         $stmtFP->bindParam(':id_fornecedor', $fornecedor_id);
@@ -83,7 +83,6 @@ $permissoes = [
     ]
 ];
 
-// OBTENDO AS OPÇÕES DISPONÍVEIS PARA O PERFIL LOGADO
 $opcoes_menu = $permissoes[$id_perfil];
 
 
@@ -94,7 +93,7 @@ $opcoes_menu = $permissoes[$id_perfil];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastrar Usuario</title>
+    <title>Cadastrar Produto</title>
     <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
     <link rel = "stylesheet" href = "styles.css">
@@ -134,16 +133,14 @@ $opcoes_menu = $permissoes[$id_perfil];
         <input type="text" id="valor" name="valor" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" / required>
 
         <label for="fornecedor">Fornecedor:</label>
-<select id="fornecedor" name="fornecedor" required>
-    <option value="">Selecione um fornecedor</option>
-    <?php foreach($fornecedores as $fornecedor): ?>
-        <option value="<?= $fornecedor['id_fornecedor'] ?>">
-            <?= htmlspecialchars($fornecedor['nome_fornecedor']) ?>
-        </option>
-    <?php endforeach; ?>
-</select>
-
-        
+    <select id="fornecedor" name="fornecedor" required>
+        <option value="">Selecione um fornecedor</option>
+        <?php foreach($fornecedores as $fornecedor): ?>
+            <option value="<?= $fornecedor['id_fornecedor'] ?>">
+                <?= htmlspecialchars($fornecedor['nome_fornecedor']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
 
         <button type="submit">Salvar</button>
         <button type="reset">Cancelar</button>
