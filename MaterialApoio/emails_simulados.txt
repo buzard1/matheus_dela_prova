@@ -18,3 +18,11 @@ Para: grace@grace
 Olá! Sua nova senha temporária é: od6tPmJj
 
 ----------------------
+Para: admin@admin
+Olá! Sua nova senha temporária é: K6uDdFMX
+
+----------------------
+Para: carlos@empresa.com
+Olá! Sua nova senha temporária é: g2O0QIVl
+
+----------------------
