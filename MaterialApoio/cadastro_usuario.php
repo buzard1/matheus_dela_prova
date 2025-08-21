@@ -2,11 +2,9 @@
 session_start();
 require_once 'conexao.php';
 
-//VERIFICA SE O USUARIO TEM PERMISSAO
-//SUPONDO QUE O PERFIL 1 SEJA O ADMINISTRADOR   
-
 if($_SESSION['perfil']!=1){
-    echo "Acesso Negado!";
+    echo "<script>alert('Acesso Negado');window.location.href='principal.php'</script>";
+    exit();
 }
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
