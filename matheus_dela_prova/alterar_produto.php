@@ -28,7 +28,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $stmt->execute();
         $produto = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        //SE O USUARIO NÃO FOR ENCONTRADO, EXBIBE UM ALERTA
+        //SE O PRODUTO NÃO FOR ENCONTRADO, EXBIBE UM ALERTA
         if(!$produto){
             echo "<script>alert('Produto não encontrado!');</script>";
         }
@@ -106,7 +106,6 @@ $opcoes_menu = $permissoes[$id_perfil];
     <form action="alterar_produto.php" method="POST">
         <label for="busca_produto">Digite o id ou nome do produto</label>
         <input type="text" id="busca_produto" name="busca_produto" required onkeyup="buscarSugestoes()">
-        <!-- div para exibir sugestoes de usuarios -->
         <div id="sugestoes"></div>
         <button type="submit">Buscar</button>
     </form>
@@ -117,8 +116,8 @@ $opcoes_menu = $permissoes[$id_perfil];
 
             <input type="hidden" name="id_produto" value="<?=htmlspecialchars($produto['id_produto'])?>">
 
-            <label for="nome_prod">Nome Produto:</label>
-            <input type="text" id="nome_prod" name="nome_prod" value="<?=htmlspecialchars($produto['nome_prod'])?>" required>
+            <label for="nomeprod">Nome Produto:</label>
+            <input type="text" id="nomeprod" name="nomeprod" value="<?=htmlspecialchars($produto['nome_prod'])?>" required>
 
             <label for="descricao">Descrição:</label>
             <input type="text" id="descricao" name="descricao" value="<?=htmlspecialchars($produto['descricao'])?>" required>
@@ -134,7 +133,7 @@ $opcoes_menu = $permissoes[$id_perfil];
             <button type="reset">Cancelar</button>
         </form>
         <?php endif;?>
-        <a href="principal.php">Voltar</a>
+        <a href="principal.php" class="btn btn-outline-primary">Voltar</a>
         <center> <address> Matheus dela libera dos anjos/ Estudante / Tecnico em Deenvolvimento de Sistemas </address> </center>
 
 </body>

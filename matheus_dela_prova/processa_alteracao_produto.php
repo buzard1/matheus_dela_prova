@@ -9,26 +9,25 @@ if($_SESSION['perfil']!=1 && $_SESSION['perfil']!=2 && $_SESSION['perfil']!=3){
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
     $id_produto = $_POST['id_produto'];
-    $nomeprod = $_POST['nome_prod'];
+    $nomeprod = $_POST['nomeprod'];
     $descricao = $_POST['descricao'];
     $quantidade = $_POST['quantidade'];
     $valor = $_POST['valor'];
 
-//ATUALIZA OS DADOS DO USUARIO
+    //atualiza no banco de dados
+    $sql = "UPDATE produto SET nome_prod = :nomeprod, descricao = :descricao, qtde = :quantidade, valor_unit = :valor WHERE id_produto = :id";
 
-    $sql = "UPDATE produto SET nome = :nomeprod, descricao = :descricao, qntd = :quantidade, valor_unit =:valor WHERE id_produto = :id";
     $stmt = $pdo->prepare($sql);
-    
-    $stmt->bindParam(':nome_prod', $nomeProd);
+    $stmt->bindParam(':nomeprod', $nomeprod);
     $stmt->bindParam(':descricao', $descricao);
     $stmt->bindParam(':quantidade', $quantidade);
     $stmt->bindParam(':valor', $valor);
     $stmt->bindParam(':id', $id_produto, PDO::PARAM_INT);
 
     if ($stmt->execute()) {
-        echo "<script>alert('Usuário atualizado com sucesso!');window.location.href='buscar_usuario.php'</script>";
+        echo "<script>alert('Produto atualizado com sucesso!');window.location.href='buscar_produto.php'</script>";
     } else {
-        echo "<script>alert('Erro ao atualizar usuário!');window.location.href='alterar_usuario.php?id=$id_usuario';</script>";
+        echo "<script>alert('Erro ao atualizar produto!');window.location.href='buscar_produto.php?id=$id_produto';</script>";
     }
 }
 ?>
