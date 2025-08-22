@@ -146,7 +146,7 @@ $opcoes_menu = $permissoes[$id_perfil];
         <button type="reset">Cancelar</button>
     </form>
 
-    <a href="principal.php">Voltar</a>
+    <a href="principal.php" class="btn btn-outline-primary">Voltar</a>
     <center> <address> Matheus dela libera dos anjos/ Estudante / Tecnico em Deenvolvimento de Sistemas </address> </center>
 </body>
 </html>

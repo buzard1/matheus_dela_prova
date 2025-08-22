@@ -125,7 +125,7 @@ $opcoes_menu = $permissoes[$id_perfil];
             <p>Nenhum Produto encontrado</p>
         <?php endif;?>
 
-        <a href="principal.php">Voltar</a>
+        <a href="principal.php" class="btn btn-outline-primary">Voltar</a>
         <center> <address> Matheus dela libera dos anjos/ Estudante / Tecnico em Deenvolvimento de Sistemas </address> </center>
 
 </body>
